@@ -22,7 +22,10 @@ export function useRoundRunner({ baseTime = 2.5, min = 1.2, max = 6.0 } = {}) {
     return new Promise((resolve) => {
       const interval = setInterval(() => {
         if (abortRef?.value) {
-          round.participants.forEach(h => h.stopped = true)
+          round.participants.forEach(h => {
+            h.stopped = true
+            h.progress = Math.min((h.elapsed / (h.speed * 1000)) * 100, 100)
+          })
           clearInterval(interval)
           resolve(null)
           return

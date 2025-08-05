@@ -1,9 +1,9 @@
 <template>
   <div class="controls">
-    <button :disabled="isRunning" @click="emit('generate')">Generate Races</button>
+    <button v-if="!racesExist" @click="emit('generate')">Generate Races</button>
+    <button v-if="racesExist" :disabled="isRunning" @click="emit('reset')">Reset Races</button>
     <button v-if="!isRunning && !isFinished" :disabled="!racesExist" @click="emit('start')">Start</button>
     <button v-else-if="isRunning" @click="emit('stop')">Stop</button>
-    <button v-if="!isRunning && racesExist" :disabled="isRunning" @click="emit('reset')">Reset</button>
   </div>
 </template>
 
