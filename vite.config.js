@@ -3,5 +3,9 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   base: '/horse-racing-test/',
-  plugins: [vue()]
+  plugins: [vue()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+  },
 })

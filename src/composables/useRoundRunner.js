@@ -1,53 +1,59 @@
 export function useRoundRunner({ baseTime = 2.5, min = 1.2, max = 6.0 } = {}) {
-  function clamp(val, min, max) {
-    return Math.max(min, Math.min(max, val))
+  const clamp = (val, min, max) => Math.max(min, Math.min(max, val))
+
+  const initializeHorse = (horse) => {
+    if (horse.progress >= 100) return false
+
+    horse.elapsed ??= 0
+    if (horse.speed == null) {
+      const rawSpeed = baseTime * (100 / horse.condition)
+      horse.speed = clamp(rawSpeed, min, max)
+    }
+    return true
   }
 
   return async function runRound(round, abortRef) {
-    const stepTime = 50
-    let runningCount = 0
+    const horses = round.participants.filter(initializeHorse)
 
-    round.participants.forEach((h) => {
-      if (h.progress >= 100) return
-
-      if (h.elapsed == null) h.elapsed = 0
-      if (h.speed == null) {
-        const rawSpeed = baseTime * (100 / h.condition)
-        h.speed = clamp(rawSpeed, min, max)
-      }
-
-      runningCount++
-    })
+    if (!horses.length) {
+      return [...round.participants].sort((a, b) => a.elapsed - b.elapsed)
+    }
 
     return new Promise((resolve) => {
-      const interval = setInterval(() => {
+      let lastTime = performance.now()
+
+      const step = (now) => {
         if (abortRef?.value) {
-          round.participants.forEach(h => {
-            h.stopped = true
-            h.progress = Math.min((h.elapsed / (h.speed * 1000)) * 100, 100)
-          })
-          clearInterval(interval)
+          round.participants.forEach(h => h.stopped = true)
           resolve(null)
           return
         }
 
-        round.participants.forEach((h) => {
+        const delta = now - lastTime
+        lastTime = now
+
+        let allFinished = true
+
+        horses.forEach((h) => {
           if (h.progress >= 100) return
 
-          h.elapsed += stepTime
+          h.elapsed += delta
           h.progress = Math.min((h.elapsed / (h.speed * 1000)) * 100, 100)
 
-          if (h.progress >= 100) {
-            runningCount--
+          if (h.progress < 100) {
+            allFinished = false
           }
         })
 
-        if (runningCount <= 0) {
-          clearInterval(interval)
+        if (allFinished) {
           const sorted = [...round.participants].sort((a, b) => a.elapsed - b.elapsed)
           resolve(sorted)
+        } else {
+          requestAnimationFrame(step)
         }
-      }, stepTime)
+      }
+
+      requestAnimationFrame(step)
     })
   }
 }
