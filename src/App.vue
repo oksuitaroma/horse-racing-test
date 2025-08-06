@@ -6,6 +6,7 @@
         <HorseList />
       </div>
       <div class="column center">
+        <h2> Race </h2>
         <GameControls
           :isRunning="store.state.isRunning"
           @generate="handleGenerate"
@@ -50,20 +51,46 @@ const handleReset = () => {
 
 <style scoped>
 .app {
+  --app-padding: 20px;
+  --layout-gap: 16px;
+  --left-column-width: 250px;
+  --right-column-width: 200px;
   font-family: Arial, sans-serif;
-  padding: 20px;
+  padding: var(--app-padding);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 .layout {
   display: flex;
-  gap: 16px;
+  gap: var(--layout-gap);
+  flex-wrap: wrap;
 }
 .column {
   flex: 1;
 }
 .left {
-  max-width: 300px;
+  max-width: var(--left-column-width);
 }
 .right {
-  max-width: 200px;
+  max-width: var(--right-column-width);
+}
+
+@media (max-width: 1024px) {
+  .app {
+    --app-padding: 10px;
+    --left-column-width: 50%;
+    --right-column-width: 50%;
+  }
+  .center {
+    max-width: 100%;
+    width: 100%;
+    flex: none;
+  }
+  .left {
+    order: 2;
+  }
+  .right {
+    order: 3;
+  }
 }
 </style>

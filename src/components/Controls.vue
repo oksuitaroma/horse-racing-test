@@ -20,10 +20,20 @@ const isFinished = computed(() => store.state.results.length === store.state.rac
 
 <style scoped>
 .controls {
-  margin-bottom: 20px;
+  --controls-margin-bottom: 20px;
+  margin-bottom: var(--controls-margin-bottom);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 button {
-  margin-right: 10px;
+  cursor: pointer;
   padding: 6px 12px;
+}
+@media (max-width: 768px) {
+  .controls {
+    --controls-margin-bottom: 12px;
+    justify-content: center;
+  }
 }
 </style>

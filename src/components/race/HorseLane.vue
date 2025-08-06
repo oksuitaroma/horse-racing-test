@@ -25,19 +25,27 @@ const props = defineProps({
 
 <style scoped>
 .horse-lane {
+  --lane-height: 30px;
+  --position-width: 30px;
+  --finish-offset: 95px;
+  --horse-width: 90px;
+  --horse-font-size: 14px;
+  --horse-height: 24px;
+  
   position: relative;
   height: 30px;
   border-bottom: 1px dashed #ddd;
   display: flex;
   align-items: center;
-  max-width: calc(100% - 95px);
+  max-width: calc(100% - var(--finish-offset));
 }
 .horse-lane__position {
   text-align: center;
   background-color: darkgreen;
   color: white;
   transform: rotate(-90deg);
-  width: 30px;
+  width: var(--position-width);
+  flex-shrink: 0;
 }
 .horse-lane__row {
   position: relative;
@@ -50,13 +58,24 @@ const props = defineProps({
   box-sizing: border-box;
   position: absolute;
   padding: 0 4px;
-  width: 90px;
+  width: var(--horse-width);
   border-radius: 4px;
   color: white;
   white-space: nowrap;
-  font-size: 14px;
-  height: 24px;
-  line-height: 24px;
+  font-size: var(--horse-font-size);
+  height: var(--horse-height);
+  line-height: var(--horse-height);
   transition-timing-function: ease-out;
+}
+
+@media (max-width: 768px) {
+  .horse-lane {
+    --lane-height: 26px;
+    --position-width: 24px;
+    --finish-offset: 80px;
+    --horse-width: 80px;
+    --horse-font-size: 12px;
+    --horse-height: 20px;
+  }
 }
 </style>

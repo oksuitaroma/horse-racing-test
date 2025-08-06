@@ -2,9 +2,13 @@
   <div class="program-list">
     <h2>Program</h2>
     <div v-for="(race, index) in races" :key="index" class="program-round">
-      <h3>{{ index + 1 }}st Lap — {{ race.distance }}m</h3>
       <table>
         <thead>
+          <tr>
+            <th colspan="2">
+              {{ index + 1 }}st Lap — {{ race.distance }}m
+            </th>
+          </tr>
           <tr>
             <th>Position</th>
             <th>Name</th>

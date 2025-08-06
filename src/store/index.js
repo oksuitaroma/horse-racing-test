@@ -1,16 +1,27 @@
 import { createStore } from 'vuex'
+import { 
+  RANDOM_COLOR_CHARS, 
+  RANDOM_COLOR_CHARS_LENGTH,
+  COLOR_HEX_LENGTH,
+  TOTAL_HORSES, 
+  RACE_DISTANCES, 
+  HORSES_PER_RACE, 
+  PROGRESS_MAX,
+  ID_RANDOM_SLICE_START,
+  ID_RANDOM_SLICE_END,
+  RANDOM_BASE
+} from '../constants'
 
 function getRandomColor() {
-  const letters = '0123456789ABCDEF'
-  return '#' + Array.from({ length: 6 }).map(() => letters[Math.floor(Math.random() * 16)]).join('')
+  return '#' + Array.from({ length: COLOR_HEX_LENGTH }).map(() => RANDOM_COLOR_CHARS[Math.floor(Math.random() * RANDOM_COLOR_CHARS_LENGTH)]).join('')
 }
 
 function generateHorses() {
-  return Array.from({ length: 20 }).map((_, i) => ({
+  return Array.from({ length: TOTAL_HORSES }).map((_, i) => ({
     staticId: i + 1,
     name: `Horse ${i + 1}`,
     color: getRandomColor(),
-    condition: Math.floor(Math.random() * 100) + 1,
+    condition: Math.floor(Math.random() * PROGRESS_MAX) + 1,
     progress: 0
   }))
 }
@@ -53,15 +64,14 @@ export default createStore({
       commit('setHorses', horses)
     },
     generateRaces({ state, commit }) {
-      const distances = [1200, 1400, 1600, 1800, 2000, 2200]
-      const races = distances.map(dist => ({
+      const races = RACE_DISTANCES.map(dist => ({
         distance: dist,
         participants: [...state.horses]
             .sort(() => 0.5 - Math.random())
-            .slice(0, 10)
+            .slice(0, HORSES_PER_RACE)
             .map(h => ({
               ...h,
-              id: h.staticId + '-' + Math.random().toString(36).slice(2, 6),
+              id: h.staticId + '-' + Math.random().toString(RANDOM_BASE).slice(ID_RANDOM_SLICE_START, ID_RANDOM_SLICE_END),
               progress: 0
             }))
       }))

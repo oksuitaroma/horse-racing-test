@@ -1,12 +1,24 @@
-export function useRoundRunner({ baseTime = 2.5, min = 1.2, max = 6.0 } = {}) {
+import { 
+  DEFAULT_BASE_TIME,
+  DEFAULT_MIN_SPEED,
+  DEFAULT_MAX_SPEED,
+  PROGRESS_MAX,
+  MILLISECONDS_FACTOR
+} from '../constants'
+
+export function useRoundRunner({ 
+  baseTime = DEFAULT_BASE_TIME, 
+  min = DEFAULT_MIN_SPEED, 
+  max = DEFAULT_MAX_SPEED 
+} = {}) {
   const clamp = (val, min, max) => Math.max(min, Math.min(max, val))
 
   const initializeHorse = (horse) => {
-    if (horse.progress >= 100) return false
+    if (horse.progress >= PROGRESS_MAX) return false
 
     horse.elapsed ??= 0
     if (horse.speed == null) {
-      const rawSpeed = baseTime * (100 / horse.condition)
+      const rawSpeed = baseTime * (PROGRESS_MAX / horse.condition)
       horse.speed = clamp(rawSpeed, min, max)
     }
     return true
@@ -21,10 +33,15 @@ export function useRoundRunner({ baseTime = 2.5, min = 1.2, max = 6.0 } = {}) {
 
     return new Promise((resolve) => {
       let lastTime = performance.now()
+      let animationFrameId = null
 
       const step = (now) => {
         if (abortRef?.value) {
           round.participants.forEach(h => h.stopped = true)
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId)
+            animationFrameId = null
+          }
           resolve(null)
           return
         }
@@ -35,25 +52,29 @@ export function useRoundRunner({ baseTime = 2.5, min = 1.2, max = 6.0 } = {}) {
         let allFinished = true
 
         horses.forEach((h) => {
-          if (h.progress >= 100) return
+          if (h.progress >= PROGRESS_MAX) return
 
           h.elapsed += delta
-          h.progress = Math.min((h.elapsed / (h.speed * 1000)) * 100, 100)
+          h.progress = Math.min((h.elapsed / (h.speed * MILLISECONDS_FACTOR)) * PROGRESS_MAX, PROGRESS_MAX)
 
-          if (h.progress < 100) {
+          if (h.progress < PROGRESS_MAX) {
             allFinished = false
           }
         })
 
         if (allFinished) {
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
           const sorted = [...round.participants].sort((a, b) => a.elapsed - b.elapsed)
           resolve(sorted)
         } else {
-          requestAnimationFrame(step)
+          animationFrameId = requestAnimationFrame(step)
         }
       }
 
-      requestAnimationFrame(step)
+      animationFrameId = requestAnimationFrame(step)
     })
   }
 }

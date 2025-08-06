@@ -63,14 +63,29 @@ const gameFinished = computed(() => results.value.length === 6)
 
 <style scoped>
 .race-track {
-  padding: 10px;
+  --track-padding: 10px;
+  --track-margin-top: 10px;
+  --title-font-size: 18px;
+  --finish-line-width: 105px;
+  --finish-font-size: 20px;
+  --winner-margin-top: 20px;
+  --winner-padding: 12px;
+  --button-margin-top: 10px;
+  --button-padding-v: 8px;
+  --button-padding-h: 16px;
+  --button-font-size: 16px;
+  --leaderboard-margin-top: 20px;
+  --leaderboard-padding-top: 10px;
+  --leaderboard-border-width: 2px;
+  
+  padding: var(--track-padding);
   border: 2px dashed #ccc;
 }
 .race-track__round {
-  margin-top: 10px;
+  margin-top: var(--track-margin-top);
 }
 .race-track__title {
-  font-size: 18px;
+  font-size: var(--title-font-size);
 }
 .race-track__wrapper {
   position: relative;
@@ -78,7 +93,7 @@ const gameFinished = computed(() => results.value.length === 6)
 .race-track__track {
   display: flex;
   flex-direction: column;
-  padding: 10px 0;
+  padding: var(--track-padding) 0;
 }
 .race-track__finish {
   z-index: -1;
@@ -89,18 +104,18 @@ const gameFinished = computed(() => results.value.length === 6)
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 105px;
+  width: var(--finish-line-width);
   background-color: peachpuff;
   color: white;
 }
 .race-track__finish span {
   display: inline-block;
   transform: rotate(-90deg);
-  font-size: 20px;
+  font-size: var(--finish-font-size);
 }
 .race-track__winner {
-  margin-top: 20px;
-  padding: 12px;
+  margin-top: var(--winner-margin-top);
+  padding: var(--winner-padding);
   border: 2px dashed #4CAF50;
   background-color: #eaffea;
   text-align: center;
@@ -109,13 +124,30 @@ const gameFinished = computed(() => results.value.length === 6)
   color: #2c662d;
 }
 .race-track__winner button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  font-size: 16px;
+  margin-top: var(--button-margin-top);
+  padding: var(--button-padding-v) var(--button-padding-h);
+  font-size: var(--button-font-size);
+  cursor: pointer;
 }
 .race-track__leaderboard {
-  margin-top: 20px;
-  padding-top: 10px;
-  border-top: 2px solid #ccc;
+  margin-top: var(--leaderboard-margin-top);
+  padding-top: var(--leaderboard-padding-top);
+  border-top: var(--leaderboard-border-width) solid #ccc;
+}
+
+@media (max-width: 768px) {
+  .race-track {
+    --track-padding: 8px;
+    --finish-line-width: 80px;
+    --finish-font-size: 16px;
+    --title-font-size: 16px;
+    --winner-padding: 8px;
+    --button-padding-v: 6px;
+    --button-padding-h: 12px;
+  }
+  
+  .race-track__winner h2 {
+    font-size: 18px;
+  }
 }
 </style>

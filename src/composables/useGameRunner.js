@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRoundRunner } from './useRoundRunner'
+import { ROUND_DELAY_MS, PROGRESS_MAX } from '../constants'
 
 export function useGameRunner() {
   const isStopped = ref(false)
@@ -17,7 +18,7 @@ export function useGameRunner() {
       store.commit('setCurrentRound', i)
       const round = store.state.races[i]
 
-      const isRoundFinished = round.participants.every(h => h.progress >= 100)
+      const isRoundFinished = round.participants.every(h => h.progress >= PROGRESS_MAX)
       if (isRoundFinished) continue
 
       const result = await runRound(round, isStopped)
@@ -25,7 +26,7 @@ export function useGameRunner() {
       if (!result) break
       store.commit('addResult', { round: i + 1, result })
 
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => setTimeout(resolve, ROUND_DELAY_MS))
     }
 
     store.commit('setIsRunning', false)
