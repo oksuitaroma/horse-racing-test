@@ -74,7 +74,6 @@ const handleReset = () => {
 .right {
   max-width: var(--right-column-width);
 }
-
 @media (max-width: 1024px) {
   .app {
     --app-padding: 10px;
